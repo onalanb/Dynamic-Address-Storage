@@ -1,7 +1,6 @@
 // Baran Onalan, James Robinson, Swetha Gupta, Troy Ying-Chu Chen
 // CPSC 5200 - Team 2
 // 2/13/2023
-// Professor Daugherty
 
 package edu.SeattleU.team2;
 
