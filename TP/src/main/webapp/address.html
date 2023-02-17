@@ -1,0 +1,54 @@
+<!-- http://localhost:8080/TP-1.0-SNAPSHOT/address.html -->
+<html>
+<body>
+<h2>Create new address</h2>
+<div class="container">
+    <form id="myForm">
+        <p>Recipient:</p>
+        <p><input type="text" name="recipient"></p>
+
+        <p>Country:</p>
+        <p><input type="text" name="country"></p>
+
+        <p>State:</p>
+        <p><input type="text" name="state"></p>
+
+        <p>Street Address:</p>
+        <p><input type="text" name="streetAddress"></p>
+
+        <p>Postal Code:</p>
+        <p><input type="text" name="postalCode"></p>
+
+        <p>City, Town, or Locality:</p>
+        <p><input type="text" name="city_town_locality"></p>
+
+        <p><button type="submit">Submit Form</button></p>
+    </form>
+</div>
+</body>
+<script type="text/javascript">
+    // Copy/pasted this code from:
+    // https://stackoverflow.com/questions/22195065/how-to-send-a-json-object-using-html-form-data
+    var form = document.getElementById('myForm');
+    form.onsubmit = function(event){
+        var xhr = new XMLHttpRequest();
+        var formData = new FormData(form);
+        // Create Request
+        xhr.open('POST','http://localhost:8080/TP-1.0-SNAPSHOT/api/address')
+        xhr.setRequestHeader("Content-Type", "application/json");
+
+        //send the form data
+        xhr.send(JSON.stringify(Object.fromEntries(formData)));
+
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState == XMLHttpRequest.DONE) {
+                form.reset(); //reset form after AJAX success or do something else
+            }
+        }
+        //Fail the onsubmit to avoid page refresh.
+        return false;
+    }
+</script>
+</html>
+
+// We need all the CRUDS operations, I have only done the CREATE request.
