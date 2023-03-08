@@ -1,13 +1,14 @@
+CREATE DATABASE IF NOT EXISTS TeamProject;
 USE TeamProject;
 CREATE TABLE addresses {
 	id int NOT NULL AUTO_INCREMENT,
 	country varchar(255),
 	state_province varchar(255),
 	recipient varchar(255),
-      street_address varchar(255),
-      postal_code varchar(255),
-      city_town_locality varchar(255),
-      full_address varchar(255),
+    street_address varchar(255),
+    postal_code varchar(255),
+    city_town_locality varchar(255),
+    full_address varchar(255),
 	street_number varchar(255)
 }
 

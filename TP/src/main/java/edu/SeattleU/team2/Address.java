@@ -13,21 +13,25 @@ public class Address {
     private String postalCode;
     private String city_town_locality;
     private String state;
+    private String full_address;
+    private String street_number;
 
     // Default constructor is required for JSON serialization and deserialization.
     public Address () { }
 
-    public Address (String country, String recipient, String streetAddress, String postalCode, String city_town_locality, String state) {
+    public Address (String country, String recipient, String streetAddress, String postalCode, String city_town_locality, String state, String full_address, String street_number) {
         this.country = country;
         this.recipient = recipient;
         this.streetAddress = streetAddress;
         this.postalCode = postalCode;
         this.city_town_locality = city_town_locality;
         this.state = state;
+        this.full_address = " ";
+        this.street_number = " ";
     }
 
 
-    Address (int ID, String country, String recipient, String streetAddress, String postalCode, String city_town_locality, String state) {
+    Address (int ID, String country, String recipient, String streetAddress, String postalCode, String city_town_locality, String state, String full_address, String street_number) {
         this.ID = ID;
         this.country = country;
         this.recipient = recipient;
@@ -35,6 +39,8 @@ public class Address {
         this.postalCode = postalCode;
         this.city_town_locality = city_town_locality;
         this.state = state;
+        this.full_address = " ";
+        this.street_number = " ";
     }
 
     // GETTERS
@@ -67,6 +73,14 @@ public class Address {
         return state;
     }
 
+    public String getFull_address(){
+        return full_address;
+    }
+
+    public String getStreet_number(){
+        return street_number;
+    }
+
     // SETTERS
 
     void setID(int ID) {
@@ -95,5 +109,13 @@ public class Address {
 
     public void setState(String state) {
         this.state = state;
+    }
+
+    public void setFull_address(String full_address){
+        this.full_address = full_address;
+    }
+
+    public void setStreet_number(String street_number){
+        this.street_number = street_number;
     }
 }

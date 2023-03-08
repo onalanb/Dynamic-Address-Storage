@@ -45,7 +45,7 @@ public class AddressResource {
     public Response createNewAddress(Address address) {
         try {
             PreparedStatement statement = connection.prepareStatement(
-                    "INSERT INTO Address (country, recipient, streetAddress, postalCode, city_town_locality, state) VALUES (?, ?, ?, ?, ?, ?)",
+                    "INSERT INTO Address (country, recipient, streetAddress, postalCode, city_town_locality, state, full_address, street_number) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
                     PreparedStatement.RETURN_GENERATED_KEYS);
             statement.setString(1, address.getCountry());
             statement.setString(2, address.getRecipient());
@@ -53,6 +53,8 @@ public class AddressResource {
             statement.setString(4, address.getPostalCode());
             statement.setString(5, address.getCity_town_locality());
             statement.setString(6, address.getState());
+            statement.setString(7, address.getFull_address());
+            statement.setString(8, address.getStreet_number());
             int rowsInserted = statement.executeUpdate();
             if (rowsInserted > 0) {
                 ResultSet generatedKeys = statement.getGeneratedKeys();
@@ -78,7 +80,7 @@ public class AddressResource {
 
         try {
             PreparedStatement pstmt = connection.prepareStatement(
-                    "SELECT ID, country, recipient, streetAddress, postalCode, city_town_locality, state FROM Address WHERE ID = ?");
+                    "SELECT ID, country, recipient, streetAddress, postalCode, city_town_locality, state, full_address, street_number FROM Address WHERE ID = ?");
             pstmt.setInt(1, id);
             ResultSet rs = pstmt.executeQuery();
             if (rs.next()) {
@@ -88,7 +90,9 @@ public class AddressResource {
                 String postalCode = rs.getString("postalCode");
                 String city_town_locality = rs.getString("city_town_locality");
                 String state = rs.getString("state");
-                address = new Address(id, country, recipient, streetAddress, postalCode, city_town_locality, state);
+                String full_address = rs.getString("full_address");
+                String street_number = rs.getString("street_number");
+                address = new Address(id, country, recipient, streetAddress, postalCode, city_town_locality, state, full_address, street_number);
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -106,14 +110,16 @@ public class AddressResource {
     public Response updateAddress(@PathParam("intID") Integer id, Address address) {
         try {
             PreparedStatement pstmt = connection.prepareStatement(
-                    "UPDATE Address SET country = ?, recipient = ?, streetAddress = ?, postalCode = ?, city_town_locality = ?, state = ? WHERE ID = ?");
+                    "UPDATE Address SET country = ?, recipient = ?, streetAddress = ?, postalCode = ?, city_town_locality = ?, state = ?, full_address = ?, street_number = ?, WHERE ID = ?");
             pstmt.setString(1, address.getCountry());
             pstmt.setString(2, address.getRecipient());
             pstmt.setString(3, address.getStreetAddress());
             pstmt.setString(4, address.getPostalCode());
             pstmt.setString(5, address.getCity_town_locality());
             pstmt.setString(6, address.getState());
-            pstmt.setInt(7, id);
+            pstmt.setString(7, address.getFull_address());
+            pstmt.setString(8, address.getStreet_number());
+            pstmt.setInt(9, id);
             int rowsUpdated = pstmt.executeUpdate();
             if (rowsUpdated > 0) {
                 address.setID(id); // check if this fix worked
@@ -155,7 +161,7 @@ public class AddressResource {
         ArrayList<Address> result = new ArrayList<Address>();
         try {
             PreparedStatement pstmt = connection.prepareStatement(
-                    "SELECT ID, country, recipient, streetAddress, postalCode, city_town_locality, state FROM Address WHERE country LIKE ? AND recipient LIKE ?");
+                    "SELECT ID, country, recipient, streetAddress, postalCode, city_town_locality, state, full_address, street_number FROM Address WHERE country LIKE ? AND recipient LIKE ?");
             pstmt.setString(1, "%" + (country == null ? "" : country) + "%");
             pstmt.setString(2, "%" + (recipient == null ? "" : recipient) + "%");
             ResultSet rs = pstmt.executeQuery();
@@ -167,7 +173,9 @@ public class AddressResource {
                 String retrievedPostalCode = rs.getString("postalCode");
                 String retrievedCityTownLocality = rs.getString("city_town_locality");
                 String retrievedState = rs.getString("state");
-                result.add(new Address(id, retrievedCountry, retrievedRecipient, retrievedStreetAddress, retrievedPostalCode, retrievedCityTownLocality, retrievedState));
+                String retrievedFullAddress = rs.getString("full_address");
+                String retrievedStreetNumber = rs.getString("street_number");
+                result.add(new Address(id, retrievedCountry, retrievedRecipient, retrievedStreetAddress, retrievedPostalCode, retrievedCityTownLocality, retrievedState, retrievedFullAddress, retrievedStreetNumber));
             }
             return Response.ok(result).build();
         } catch (SQLException e) {
