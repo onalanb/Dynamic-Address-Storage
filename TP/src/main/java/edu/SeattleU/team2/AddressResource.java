@@ -12,7 +12,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-@Path("/address")
+@Path("/addresses")
 public class AddressResource {
 
     // TO-DO
@@ -45,17 +45,106 @@ public class AddressResource {
     public Response createNewAddress(Address address) {
         try {
             PreparedStatement statement = connection.prepareStatement(
-                    "INSERT INTO Address (country, recipient, streetAddress, postalCode, city_town_locality, state, full_address, street_number) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+                    "INSERT INTO Address (country, state_province, recipient, street_number, street_address, postal_code, city_town_locality, address_format, full_address) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
                     PreparedStatement.RETURN_GENERATED_KEYS);
 
-            statement.setString(1, address.getCountry());
-            statement.setString(2, address.getRecipient());
-            statement.setString(3, address.getStreetAddress());
-            statement.setString(4, address.getPostalCode());
-            statement.setString(5, address.getCity_town_locality());
-            statement.setString(6, address.getState());
-            statement.setString(7, address.getFull_address());
-            statement.setString(8, address.getStreet_number());
+            String country = address.getCountry();
+            String state = address.getState();
+            String recipient = address.getRecipient();
+            String street_number = address.getStreet_number();
+            String street_address = address.getStreetAddress();
+            String postal_code = address.getPostalCode();
+            String city_town_locality = address.getCity_town_locality();
+
+            statement.setString(1, country);
+            statement.setString(2, state);
+            statement.setString(3, recipient);
+            statement.setString(4, street_number);
+            statement.setString(5, street_address);
+            statement.setString(6, postal_code);
+            statement.setString(7, city_town_locality);
+
+            if(address.getCountry() == "United States")
+            {
+                String address_format = "%s %s %s %s %s %s %s";
+                String full_address = String.format(address_format, recipient, street_number, street_address, city_town_locality, state, postal_code, country);
+                statement.setString(8, address_format);
+                statement.setString(9, full_address);
+
+            }
+            else if(address.getCountry() == "Canada")
+            {
+                String address_format = "%s %s %s %s %s %s %s";
+                String full_address = String.format(address_format, recipient, street_number, street_address, city_town_locality, state, postal_code, country);
+                statement.setString(8, address_format);
+                statement.setString(9, full_address);
+            }
+            else if(address.getCountry() == "Australia")
+            {
+                String address_format = "%s %s %s %s %s %s %s";
+                String full_address = String.format(address_format, recipient, street_number, street_address, city_town_locality, state, postal_code, country);
+                statement.setString(8, address_format);
+                statement.setString(9, full_address);
+            }
+            else if(address.getCountry() == "China")
+            {
+                String address_format = "%s %s %s %s %s %s %s";
+                String full_address = String.format(address_format, recipient, street_number, street_address, city_town_locality, state, postal_code, country);
+                statement.setString(8, address_format);
+                statement.setString(9, full_address);
+            }
+            else if(address.getCountry() == "France")
+            {
+                String address_format = "%s %s %s %s %s %s";
+                String full_address = String.format(address_format, recipient, street_number, street_address, postal_code, city_town_locality, country);
+                statement.setString(8, address_format);
+                statement.setString(9, full_address);
+            }
+            else if(address.getCountry() == "Spain")
+            {
+                String address_format = "%s %s %s %s %s %s %s";
+                String full_address = String.format(address_format, recipient, street_address, street_number, postal_code, city_town_locality, state, country);
+                statement.setString(8, address_format);
+                statement.setString(9, full_address);
+            }
+            else if(address.getCountry() == "New Zealand")
+            {
+                String address_format = "%s %s %s %s %s %s";
+                String full_address = String.format(address_format, recipient, street_number, street_address, city_town_locality, postal_code, country);
+                statement.setString(8, address_format);
+                statement.setString(9, full_address);
+            }
+            else if(address.getCountry() == "Germany")
+            {
+                String address_format = "%s %s %s %s %s %s";
+                String full_address = String.format(address_format, recipient, street_address, street_number, postal_code, city_town_locality, country);
+                statement.setString(8, address_format);
+                statement.setString(9, full_address);
+            }
+            else if(address.getCountry() == "United Kingdom")
+            {
+                String address_format = "%s %s %s %s %s %s";
+                String full_address = String.format(address_format, recipient, street_number, street_address, city_town_locality, country, postal_code);
+                statement.setString(8, address_format);
+                statement.setString(9, full_address);
+            }
+            else if(address.getCountry() == "Mexico")
+            {
+                String address_format = "%s %s %s %s %s %s";
+                String full_address = String.format(address_format, recipient, street_address, street_number, postal_code, city_town_locality, state);
+                statement.setString(8, address_format);
+                statement.setString(9, full_address);
+            }
+            else
+            {
+                // default format: street_address, city, state/province/region, postal_code, country
+                String address_format = "%s, %s, %s, %s, %s, %s, %s";
+                String full_address = String.format(address_format, recipient, street_number, street_address, city_town_locality, state, postal_code, country);
+                statement.setString(8, address_format);
+                statement.setString(9, full_address);
+
+            }
+            statement.setString(8, address.getAddress_format());
             int rowsInserted = statement.executeUpdate();
             if (rowsInserted > 0) {
                 ResultSet generatedKeys = statement.getGeneratedKeys();
@@ -91,9 +180,8 @@ public class AddressResource {
                 String postalCode = rs.getString("postalCode");
                 String city_town_locality = rs.getString("city_town_locality");
                 String state = rs.getString("state");
-                String full_address = rs.getString("full_address");
                 String street_number = rs.getString("street_number");
-                address = new Address(id, country, recipient, streetAddress, postalCode, city_town_locality, state, full_address, street_number);
+                address = new Address(country, recipient, streetAddress, postalCode, city_town_locality, state, street_number);
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -174,9 +262,9 @@ public class AddressResource {
                 String retrievedPostalCode = rs.getString("postalCode");
                 String retrievedCityTownLocality = rs.getString("city_town_locality");
                 String retrievedState = rs.getString("state");
-                String retrievedFullAddress = rs.getString("full_address");
+                // String retrievedFullAddress = rs.getString("full_address");
                 String retrievedStreetNumber = rs.getString("street_number");
-                result.add(new Address(id, retrievedCountry, retrievedRecipient, retrievedStreetAddress, retrievedPostalCode, retrievedCityTownLocality, retrievedState, retrievedFullAddress, retrievedStreetNumber));
+                result.add(new Address(id, retrievedCountry, retrievedRecipient, retrievedStreetAddress, retrievedPostalCode, retrievedCityTownLocality, retrievedState, retrievedStreetNumber));
             }
             return Response.ok(result).build();
         } catch (SQLException e) {
