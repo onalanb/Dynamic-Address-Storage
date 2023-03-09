@@ -47,6 +47,7 @@ public class AddressResource {
             PreparedStatement statement = connection.prepareStatement(
                     "INSERT INTO Address (country, recipient, streetAddress, postalCode, city_town_locality, state, full_address, street_number) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
                     PreparedStatement.RETURN_GENERATED_KEYS);
+
             statement.setString(1, address.getCountry());
             statement.setString(2, address.getRecipient());
             statement.setString(3, address.getStreetAddress());
