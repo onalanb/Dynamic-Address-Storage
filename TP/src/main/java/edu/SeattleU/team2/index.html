@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>CRUD Table with Search Functionality using Bootstrap</title>
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-gC/0a7+nXVb+5pPn7n6G5U6nU7Zc0U6jRMa9AgQN5lW6E0MxtLyk4ZabwEjhgx2y" crossorigin="anonymous">
+  <!-- Support for Chinese characters -->
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Language" content="zh-CN">
+</head>
+<body>
+<div class="container my-5">
+  <h1 class="text-center mb-5">CRUD Table with Search Functionality using Bootstrap</h1>
+  <div class="row">
+    <div class="col-md-8">
+      <form class="form-inline mb-3">
+        <div class="form-group mr-2">
+          <input type="text" class="form-control" id="searchInput" placeholder="Search...">
+        </div>
+        <button type="button" class="btn btn-primary" id="searchBtn"><i class="fas fa-search"></i> Search</button>
+      </form>
+    </div>
+    <div class="col-md-4 text-right">
+      <button type="button" class="btn btn-success" data-toggle="modal" data-target="#addModal"><i class="fas fa-plus"></i> Add New</button>
+    </div>
+  </div>
+  <div class="table-responsive">
+    <table class="table table-bordered">
+      <thead>
+      <tr>
+        <th>ID</th>
+        <th>Recipient</th>
+        <th>Country</th>
+        <th>State</th>
+        <th>City/Town/Locality</th>
+        <th>Street/Address/House Number</th>
+        <th>Street Name</th>
+        <th>Postal Code</th>
+        <th>Full Address</th>
+        <th>Action</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td>""</td>
+        <td>""</td>
+        <td>""</td>
+        <td>""</td>
+        <td>""</td>
+        <td>""</td>
+        <td>""</td>
+        <td>""</td>
+        <td>""</td>
+        <td>
+          <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#editModal"><i class="fas fa-edit"></i> Edit</button>
+          <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#deleteModal"><i class="fas fa-trash"></i> Delete</button>
+        </td>
+      </tr>
+    </table>
+  </div>
+</div>
+<!-- Add Modal -->
+<div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="addModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="addModalLabel">Add New Record</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form method="POST" action="AddRecordServlet">
+          <div class="form-group">
+            <label for="recipientInput">Recipient</label>
+            <input type="text" class="form-control" id="recipientInput" name="recipient" placeholder="Enter recipient">
+          </div>
+          <div class="form-group">
+            <label for="countryInput">Country</label>
+            <input type="text" class="form-control" id="countryInput" name="country" placeholder="Enter Country">
+          </div>
+          <div class="form-group">
+            <label for="stateInput">State</label>
+            <input type="text" class="form-control" id="stateInput" name="state" placeholder="Enter State">
+          </div>
+          <div class="form-group">
+            <label for="cityInput">City/Town/Locality</label>
+            <input type="text" class="form-control" id="cityInput" name="city" placeholder="Enter City/Town/Locality">
+          </div>
+          <div class="form-group">
+            <label for="postalCodeInput">Postal Code</label>
+            <input type="text" class="form-control" id="postalCodeInput" name="postalCode" placeholder="Enter Postal Code">
+          </div>
+          <div class="form-group">
+            <label for="streetNumberInput">Street/Address/House Number</label>
+            <input type="text" class="form-control" id="streetNumberInput" name="streetNumber" placeholder="Enter Street/Address/House Number">
+          </div>
+          <div class="form-group">
+            <label for="streetAddressInput">Street Name</label>
+            <input type="text" class="form-control" id="streetAddressInput" name="streetAddress" placeholder="Enter Street Name">
+          </div>
+          <button type="submit" class="btn btn-primary">Save changes</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </form>
+      </div>
+    </div>
+
+  </div>
+</div>
+<!-- Edit Modal -->
+<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="editModalLabel">Edit Record</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form method="POST" action="EditRecordServlet">
+          <div class="form-group">
+            <label for="recipientInput">Recipient</label>
+            <input type="text" class="form-control" id="recipientInput" name="recipient" placeholder="Enter recipient">
+          </div>
+          <div class="form-group">
+            <label for="countryInput">Country</label>
+            <input type="text" class="form-control" id="countryInput" name="country" placeholder="Enter Country">
+          </div>
+          <div class="form-group">
+            <label for="stateInput">State</label>
+            <input type="text" class="form-control" id="stateInput" name="state" placeholder="Enter State">
+          </div>
+          <div class="form-group">
+            <label for="cityInput">City/Town/Locality</label>
+            <input type="text" class="form-control" id="cityInput" name="city" placeholder="Enter City/Town/Locality">
+          </div>
+          <div class="form-group">
+            <label for="postalCodeInput">Postal Code</label>
+            <input type="text" class="form-control" id="postalCodeInput" name="postalCode" placeholder="Enter Postal Code">
+          </div>
+          <div class="form-group">
+            <label for="streetNumberInput">Street/Address/House Number</label>
+            <input type="text" class="form-control" id="streetNumberInput" name="streetNumber" placeholder="Enter Street/Address/House Number">
+          </div>
+          <div class="form-group">
+            <label for="streetAddressInput">Street Name</label>
+            <input type="text" class="form-control" id="streetAddressInput" name="streetAddress" placeholder="Enter Street Name">
+          </div>
+          <input type="hidden" id="idInput" name="id">
+          <button type="submit" class="btn btn-primary">Save changes</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Delete Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="deleteModalLabel">Delete Record</h5><button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+      </div>
+      <div class="modal-body">
+        Are you sure you want to delete this record?
+      </div>
+      <div class="modal-footer">
+        <form method="POST" action="DeleteRecordServlet">
+          <input type="hidden" id="idInput" name="id">
+          <button type="submit" class="btn btn-danger">Yes</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- jQuery and Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI0f7ZFwab1JtU" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+<!-- Custom JavaScript -->
+<script>
+  $(document).ready(function() {
+    // Search functionality
+    $('#searchBtn').click(function() {
+      var searchValue = $('#searchInput').val().toLowerCase();
+      $('tbody tr').filter(function() {
+        $(this).toggle($(this).text().toLowerCase().indexOf(searchValue) > -1);
+      });
+    });
+    // Edit functionality
+    $('#editModal').on('show.bs.modal', function (event) {
+      var button = $(event.relatedTarget);
+      var id = button.data('id');
+      var recipient = button.data('recipient');
+      var country = button.data('country');
+      var state = button.data('state');
+      var city = button.data('city');
+      var postalCode = button.data('postal-code');
+      var streetNumber = button.data('street-number');
+      var streetAddress = button.data('street-address');
+
+      var modal = $(this);
+      modal.find('.modal-title').text('Edit Record');
+      modal.find('.modal-body #idInput').val(id);
+      modal.find('.modal-body #recipientInput').val(recipient);
+      modal.find('.modal-body #countryInput').val(country);
+      modal.find('.modal-body #stateInput').val(state);
+      modal.find('.modal-body #cityInput').val(city);
+      modal.find('.modal-body #postalCodeInput').val(postalCode);
+      modal.find('.modal-body #streetNumberInput').val(streetNumber);
+      modal.find('.modal-body #streetAddressInput').val(streetAddress);
+    });
+
+// Delete functionality
+    $('#deleteModal').on('show.bs.modal', function (event) {
+      var button = $(event.relatedTarget);
+      var id = button.data('id');
+      var modal = $(this);
+      modal.find('.modal-footer #idInput').val(id);
+    });
+  });
+</script>
+</body>
+</html>
