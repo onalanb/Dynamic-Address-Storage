@@ -162,7 +162,7 @@ public class AddressResource {
         ArrayList<Address> result = new ArrayList<Address>();
         try {
             PreparedStatement pstmt = connection.prepareStatement(
-                    "SELECT ID, country, recipient, streetAddress, postalCode, city_town_locality, state, full_address, street_number FROM Address WHERE country LIKE ? AND recipient LIKE ?"); // add where and like clause for the rest of parameters
+                    "SELECT ID, country, recipient, streetAddress, postalCode, city_town_locality, state, full_address, street_number FROM Address WHERE country LIKE ? AND recipient LIKE ? AND streetAddress LIKE ? AND postalCode LIKE ? AND city_town_locality LIKE ? AND state LIKE ? AND full_address LIKE ? AND street_number LIKE ?"); // add where and like clause for the rest of parameters
             pstmt.setString(1, "%" + (country == null ? "" : country) + "%");
             pstmt.setString(2, "%" + (recipient == null ? "" : recipient) + "%");
             ResultSet rs = pstmt.executeQuery();

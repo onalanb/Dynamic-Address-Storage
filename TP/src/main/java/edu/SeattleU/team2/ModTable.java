@@ -7,9 +7,7 @@ import java.sql.*;
 
 public class ModTable {
     public static void main(String[] args) {
-        String driver = "com.mysql.jdbc.Driver";
         String url = "jdbc:mysql://localhost:3306/TeamProject?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
-
         String userName = "root";
         String password = "password";
         Connection conn = null;
@@ -24,7 +22,7 @@ public class ModTable {
             // Drop the addresses table if it exists
             stmt.executeUpdate("DROP TABLE IF EXISTS `addresses`");
 
-            // Create the addresses table
+            // Create the addresses table with full_address column
             String createTableSQL = "CREATE TABLE `addresses` (" +
                     "`id` int NOT NULL AUTO_INCREMENT," +
                     "`country` varchar(255)," +
@@ -34,19 +32,11 @@ public class ModTable {
                     "`street_address` varchar(255)," +
                     "`postal_code` varchar(255)," +
                     "`city_town_locality` varchar(255)," +
-                    "`address_format` varchar(255)," +
+                    "`full_address` varchar(255)," +
                     "PRIMARY KEY (`id`)" +
                     ")";
-
             stmt.executeUpdate(createTableSQL);
 
-            // Add the full_address column to the addresses table
-            String addColumnSQL = "ALTER TABLE `addresses` ADD COLUMN `full_address` VARCHAR(255) DEFAULT NULL AFTER `address_format`";
-            stmt.executeUpdate(addColumnSQL);
-
-            // Set all values of full_address to NULL again
-            String setNullSQL = "UPDATE `addresses` SET `full_address`=NULL";
-            stmt.executeUpdate(setNullSQL);
 
             // Execute the SQL script file
             String sqlScriptFilePath = "/Users/troy8chen/Desktop/2023 Winter/CPSC5200/Dynamic-Address-Storage/TP/src/main/java/edu/SeattleU/team2/addressesWITH_DATA.sql";
@@ -79,7 +69,7 @@ public class ModTable {
             }
             System.out.println("SQL script file executed successfully!");
             // Print all rows in the addresses table
-            rs = stmt.executeQuery("SELECT * FROM `addresses`");
+            rs = stmt.executeQuery("SELECT `id`, `country`, `state_province`, `recipient`, `street_number`, `street_address`, `postal_code`, `city_town_locality` FROM `addresses`");
             ResultSetMetaData metaData = rs.getMetaData();
             int columnCount = metaData.getColumnCount();
             while (rs.next()) {
@@ -100,7 +90,8 @@ public class ModTable {
             e.printStackTrace();
         } finally {
             try {
-                if (rs != null) {
+                if (rs != null)
+                {
                     rs.close();
                 }
                 if (stmt != null) {
