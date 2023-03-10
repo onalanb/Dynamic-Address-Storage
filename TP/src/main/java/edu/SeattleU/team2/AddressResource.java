@@ -5,12 +5,19 @@
 package edu.SeattleU.team2;
 
 import jakarta.ws.rs.*;
+import jakarta.ws.rs.container.ContainerRequestContext;
+import jakarta.ws.rs.container.ContainerResponseContext;
+import jakarta.ws.rs.container.ContainerResponseFilter;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.ext.Provider;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import java.io.IOException;
+
 
 @Path("/addresses")
 public class AddressResource {
@@ -26,6 +33,7 @@ public class AddressResource {
     private AddressResource() {
         try {
             Class.forName("com.mysql.jdbc.Driver");
+            //connection = DriverManager.getConnection("jdbc:mysql://localhost/TeamProject?useSSL=false", "debian-sys-maint", "M9DmVTikBU90gpn9");
             connection = DriverManager.getConnection("jdbc:mysql://localhost/TeamProject?useSSL=false", "root", "password");
         }
         catch (SQLException e) {
@@ -245,28 +253,77 @@ public class AddressResource {
     @Produces(MediaType.APPLICATION_JSON)
     // TO-DO
     // Add more query parameters for more search filters. Also edit the Prepared Statement.
-    public Response searchAddress(@QueryParam("country") String country,
+    public Response searchAddress(@QueryParam("queryString") String queryString,
                                   @QueryParam("recipient") String recipient) {
         ArrayList<Address> result = new ArrayList<Address>();
         try {
+            /*
             PreparedStatement pstmt = connection.prepareStatement(
+
                     "SELECT ID, country, recipient, streetAddress, postalCode, city_town_locality, state, full_address, street_number FROM Address WHERE country LIKE ? AND recipient LIKE ? AND streetAddress LIKE ? AND postalCode LIKE ? AND city_town_locality LIKE ? AND state LIKE ? AND full_address LIKE ? AND street_number LIKE ?"); // add where and like clause for the rest of parameters
             pstmt.setString(1, "%" + (country == null ? "" : country) + "%");
             pstmt.setString(2, "%" + (recipient == null ? "" : recipient) + "%");
+             */
+
+            PreparedStatement pstmt = connection.prepareStatement( "SELECT * FROM addresses WHERE CONCAT(country, state_province,recipient, street_number,street_address,postal_code, city_town_locality,full_address) LIKE ?");
+            pstmt.setString(1, "%" + (queryString == null ? "" : queryString) + "%");
             ResultSet rs = pstmt.executeQuery();
             while (rs.next()) {
                 int id = rs.getInt("ID");
                 String retrievedCountry = rs.getString("country");
+                String retrievedStateProvince = rs.getString("state_province");
                 String retrievedRecipient = rs.getString("recipient");
-                String retrievedStreetAddress = rs.getString("streetAddress");
-                String retrievedPostalCode = rs.getString("postalCode");
-                String retrievedCityTownLocality = rs.getString("city_town_locality");
-                String retrievedState = rs.getString("state");
-                // String retrievedFullAddress = rs.getString("full_address");
                 String retrievedStreetNumber = rs.getString("street_number");
-                result.add(new Address(id, retrievedCountry, retrievedRecipient, retrievedStreetAddress, retrievedPostalCode, retrievedCityTownLocality, retrievedState, retrievedStreetNumber));
+                String retrievedStreetAddress = rs.getString("street_address");
+                String retrievedPostalCode = rs.getString("postal_code");
+                String retrievedCityTownLocality = rs.getString("city_town_locality");
+                String retrievedFullAddress = rs.getString("full_address");
+                result.add(new Address(id, retrievedCountry,retrievedRecipient,retrievedStreetAddress, retrievedPostalCode,retrievedCityTownLocality,retrievedStateProvince, retrievedStreetNumber));
             }
-            return Response.ok(result).build();
+            String ans = "<table>\n" +
+                    "  <tr>\n" +
+                    "    <th>Company</th>\n" +
+                    "    <th>Contact</th>\n" +
+                    "    <th>Country</th>\n" +
+                    "  </tr>\n" +
+                    "  <tr>\n" +
+                    "    <td>Alfreds Futterkiste</td>\n" +
+                    "    <td>Maria Anders</td>\n" +
+                    "    <td>Germany</td>\n" +
+                    "  </tr>\n" +
+                    "  <tr>\n" +
+                    "    <td>Centro comercial Moctezuma</td>\n" +
+                    "    <td>Francisco Chang</td>\n" +
+                    "    <td>Mexico</td>\n" +
+                    "  </tr>\n" +
+                    "  <tr>\n" +
+                    "    <td>Ernst Handel</td>\n" +
+                    "    <td>Roland Mendel</td>\n" +
+                    "    <td>Austria</td>\n" +
+                    "  </tr>\n" +
+                    "  <tr>\n" +
+                    "    <td>Island Trading</td>\n" +
+                    "    <td>Helen Bennett</td>\n" +
+                    "    <td>UK</td>\n" +
+                    "  </tr>\n" +
+                    "  <tr>\n" +
+                    "    <td>Laughing Bacchus Winecellars</td>\n" +
+                    "    <td>Yoshi Tannamuri</td>\n" +
+                    "    <td>Canada</td>\n" +
+                    "  </tr>\n" +
+                    "  <tr>\n" +
+                    "    <td>Magazzini Alimentari Riuniti</td>\n" +
+                    "    <td>Giovanni Rovelli</td>\n" +
+                    "    <td>Italy"+queryString+"</td>\n" +
+                    "  </tr>\n" +
+                    "</table>";
+            return Response.ok(result)
+//                    .header("Access-Control-Allow-Origin", "*")
+//                    .header("Access-Control-Allow-Headers", "origin, content-type, accept, authorization")
+//                    .header("Access-Control-Allow-Credentials", "true")
+//                    .header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS, HEAD")
+//                    .header("Access-Control-Max-Age", "1209600")
+            .build();
         } catch (SQLException e) {
             e.printStackTrace();
             return Response.status(500).build();

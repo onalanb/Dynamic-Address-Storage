@@ -15,7 +15,12 @@ CREATE TABLE Address (
     PRIMARY KEY (ID)
 );
 
+show tables;
+
 SELECT * FROM Address;
+SELECT * FROM addresses;
+
+
 
 INSERT INTO Address (country, recipient, streetAddress, postalCode, city_town_locality, state)
 VALUES ('USA', 'Baran Onalan', '555 5th Street', '55555', 'Kirkland', 'WA');
