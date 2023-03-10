@@ -1,3 +1,6 @@
+// Baran Onalan, James Robinson, Swetha Gupta, Troy Ying-Chu Chen
+// CPSC 5200 - Team 2
+// 2/13/2023
 package edu.SeattleU.team2;
 
 import java.io.*;
@@ -17,7 +20,7 @@ public class addToHTML {
             // Loop through the result set and create an HTML table
             StringBuilder html = new StringBuilder();
             html.append("<table>");
-            html.append("<tr><th>ID</th><th>Recipient</th><th>Country</th><th>State</th><th>City/Town/Locality</th><th>Postal Code</th><th>Street/Address/House Number</th><th>Street Name</th></tr>");
+            html.append("<tr><th>ID</th><th>Recipient</th><th>Country</th><th>State</th><th>City/Town/Locality</th><th>Postal Code</th><th>Street/Address/House Number</th><th>Street Name</th><th>Full Address</th></tr>");
             while (rs.next()) {
                 html.append("<tr>");
                 html.append("<td>").append(rs.getString("id")).append("</td>");
@@ -28,6 +31,7 @@ public class addToHTML {
                 html.append("<td>").append(rs.getString("postal_code")).append("</td>");
                 html.append("<td>").append(rs.getString("street_address")).append("</td>");
                 html.append("<td>").append(rs.getString("street_number")).append("</td>");
+                html.append("<td>").append(rs.getString("full_address")).append("</td>");
                 html.append("</tr>");
             }
             html.append("</table>");

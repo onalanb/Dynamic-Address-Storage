@@ -1,3 +1,7 @@
+// Baran Onalan, James Robinson, Swetha Gupta, Troy Ying-Chu Chen
+// CPSC 5200 - Team 2
+// 2/13/2023
+
 CREATE DATABASE IF NOT EXISTS TeamProject;
 USE TeamProject;
 CREATE TABLE IF NOT EXISTS `addresses` (
