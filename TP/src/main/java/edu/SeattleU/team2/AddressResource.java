@@ -257,6 +257,7 @@ public class AddressResource {
     // Add more query parameters for more search filters. Also edit the Prepared Statement.
     public Response searchAddress(@QueryParam("country") String country,
                                   @QueryParam("name") String name,
+                                  @QueryParam("streetNumber") String street_number,
                                   @QueryParam("address") String address,
                                   @QueryParam("zipcode") String postal_code,
                                   @QueryParam("city") String city,
@@ -265,13 +266,15 @@ public class AddressResource {
         try {
             PreparedStatement pstmt = connection.prepareStatement(
 
-                    "SELECT * FROM addresses WHERE country LIKE ? AND recipient LIKE ? AND street_address LIKE ? AND postal_code LIKE ? AND city_town_locality LIKE ? AND state_province LIKE ?"); // add where and like clause for the rest of parameters
+                    "SELECT * FROM addresses WHERE country LIKE ? AND recipient LIKE ? AND street_address LIKE ? AND postal_code LIKE ? AND city_town_locality LIKE ? AND state_province LIKE ? AND street_number LIKE ? "); // add where and like clause for the rest of parameters
             pstmt.setString(1, "%" + (country == null ? "" : country) + "%");
             pstmt.setString(2, "%" + (name == null ? "" : name) + "%");
             pstmt.setString(3, "%" + (address == null ? "" : address) + "%");
             pstmt.setString(4, "%" + (postal_code == null ? "" : postal_code) + "%");
             pstmt.setString(5, "%" + (city == null ? "" : city) + "%");
             pstmt.setString(6, "%" + (state == null ? "" : state) + "%");
+            pstmt.setString(7, "%" + (street_number == null ? "" : street_number) + "%");
+
 
 
 //            PreparedStatement pstmt = connection.prepareStatement( "SELECT * FROM addresses WHERE CONCAT(country, state_province,recipient, street_number,street_address,postal_code, city_town_locality,full_address) LIKE ?");
@@ -292,37 +295,55 @@ public class AddressResource {
             String ans="";
             List<String> countries = result.stream().map(m -> m.getCountry()).distinct().collect(Collectors.toList());
             for(String countryVal : countries) {
-                String ans1="";
+                String ans1=countryVal+" results: <br>";
                 switch (countryVal) {
                     case "Australia":
-                        ans1="<table border=1 >\n" +
+                        ans1=ans1+"<table border=1 >\n" +
                                 "  <tr>\n" +
                                 "    <th>ID</th>\n" +
                                 "    <th>country</th>\n" +
-                                "    <th>recipient</th>\n" +
-                                "    <th>street_address</th>\n" +
-                                "    <th>zipcode</th>\n" +
-                                "    <th>city_town_locality</th>\n" +
-                                "    <th>province</th>\n" +
-                                "    <th>street_number</th>\n" +
+                                "    <th>Recipient</th>\n" +
+                                "    <th>Street Address</th>\n" +
+                                "    <th>Postal code</th>\n" +
+                                "    <th>City</th>\n" +
+                                "    <th>State</th>\n" +
+                                "    <th>street Number</th>\n" +
                                 "  </tr>\n";
                         break;
-                    default:
-                        ans1="<table border=1 >\n" +
+
+                    case "United States":
+                    case "Germany" :
+                    case "Mexico":
+                    case "Canada":
+                        ans1=ans1+"<table border=1 >\n" +
                                 "  <tr>\n" +
                                 "    <th>ID</th>\n" +
-                                "    <th>country</th>\n" +
-                                "    <th>recipient</th>\n" +
-                                "    <th>street_address</th>\n" +
-                                "    <th>postal_code</th>\n" +
-                                "    <th>city_town_locality</th>\n" +
-                                "    <th>state_province</th>\n" +
-                                "    <th>street_number</th>\n" +
+                                "    <th>Country</th>\n" +
+                                "    <th>Recipient</th>\n" +
+                                "    <th>Address</th>\n" +
+                                "    <th>zipcode</th>\n" +
+                                "    <th>City</th>\n" +
+                                "    <th>State</th>\n" +
+                                "    <th>Street Number</th>\n" +
+                                "  </tr>\n";
+                        break;
+
+                    default:
+                        ans1=ans1+"<table border=1 >\n" +
+                                "  <tr>\n" +
+                                "    <th>ID</th>\n" +
+                                "    <th>Country</th>\n" +
+                                "    <th>Recipient</th>\n" +
+                                "    <th>Street Address</th>\n" +
+                                "    <th>postal Code</th>\n" +
+                                "    <th>City\n" +
+                                "    <th>Province</th>\n" +
+                                "    <th>street Number</th>\n" +
                                 "  </tr>\n";
                         break;
                 }
                 for(Address addressVal : result) {
-                    if(addressVal.getCountry() == countryVal) {
+                    if(addressVal.getCountry().equals(countryVal)) {
                         ans1 = ans1 +
                                 String.format("  <tr>\n" +
                                                 "    <td>%s</td>\n" +

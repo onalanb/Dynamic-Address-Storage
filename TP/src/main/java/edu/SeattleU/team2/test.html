@@ -30,6 +30,8 @@
     </br></br>
     <input type="text" id="name" name="name" value="" placeholder="Full Name" onKeyPress="showCustomer(this.value)">
     </br></br>
+    <input type="text" id="streetNumber" name="address" value="" placeholder="street Number" onKeyPress="showCustomer(this.value)">
+    </br></br>
     <input type="text" id="address" name="address" value="" placeholder="Address" onKeyPress="showCustomer(this.value)">
     </br></br>
     <input type="text" id="code" name="code" value="" placeholder="Postal Code/Zip code" onKeyPress="showCustomer(this.value)">
@@ -46,6 +48,7 @@
     function showCustomer(str) {
         const country = document.getElementById("country").value;
         const name = document.getElementById("name").value;
+        const streetNumber = document.getElementById("streetNumber").value;
         const address = document.getElementById("address").value;
         const code = document.getElementById("code").value;
         const city = document.getElementById("city").value;
@@ -58,7 +61,7 @@
         xhttp.onload = function() {
             document.getElementById("txtHint").innerHTML = this.responseText;
         }
-        xhttp.open("GET", "http://127.0.0.1:8080/TP-1.0-SNAPSHOT/api/addresses?&country="+country+"&name="+name+"&address="+address+"&zipcode="+code+"&city="+city+"&state="+state);
+        xhttp.open("GET", "http://127.0.0.1:8080/TP-1.0-SNAPSHOT/api/addresses?&country="+country+"&name="+name+"&streetNumber="+streetNumber+"&zipcode="+address+"&zipcode="+code+"&city="+city+"&state="+state);
         xhttp.send();
     }
 
