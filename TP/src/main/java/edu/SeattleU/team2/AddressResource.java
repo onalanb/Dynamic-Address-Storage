@@ -17,6 +17,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Path("/addresses")
@@ -33,7 +35,7 @@ public class AddressResource {
     private AddressResource() {
         try {
             Class.forName("com.mysql.jdbc.Driver");
-            //connection = DriverManager.getConnection("jdbc:mysql://localhost/TeamProject?useSSL=false", "debian-sys-maint", "M9DmVTikBU90gpn9");
+//            connection = DriverManager.getConnection("jdbc:mysql://localhost/TeamProject?useSSL=false", "debian-sys-maint", "M9DmVTikBU90gpn9");
             connection = DriverManager.getConnection("jdbc:mysql://localhost/TeamProject?useSSL=false", "root", "password");
         }
         catch (SQLException e) {
@@ -253,20 +255,27 @@ public class AddressResource {
     @Produces(MediaType.APPLICATION_JSON)
     // TO-DO
     // Add more query parameters for more search filters. Also edit the Prepared Statement.
-    public Response searchAddress(@QueryParam("queryString") String queryString,
-                                  @QueryParam("recipient") String recipient) {
+    public Response searchAddress(@QueryParam("country") String country,
+                                  @QueryParam("name") String name,
+                                  @QueryParam("address") String address,
+                                  @QueryParam("zipcode") String postal_code,
+                                  @QueryParam("city") String city,
+                                  @QueryParam("state") String state) {
         ArrayList<Address> result = new ArrayList<Address>();
         try {
-            /*
             PreparedStatement pstmt = connection.prepareStatement(
 
-                    "SELECT ID, country, recipient, streetAddress, postalCode, city_town_locality, state, full_address, street_number FROM Address WHERE country LIKE ? AND recipient LIKE ? AND streetAddress LIKE ? AND postalCode LIKE ? AND city_town_locality LIKE ? AND state LIKE ? AND full_address LIKE ? AND street_number LIKE ?"); // add where and like clause for the rest of parameters
+                    "SELECT * FROM addresses WHERE country LIKE ? AND recipient LIKE ? AND street_address LIKE ? AND postal_code LIKE ? AND city_town_locality LIKE ? AND state_province LIKE ?"); // add where and like clause for the rest of parameters
             pstmt.setString(1, "%" + (country == null ? "" : country) + "%");
-            pstmt.setString(2, "%" + (recipient == null ? "" : recipient) + "%");
-             */
+            pstmt.setString(2, "%" + (name == null ? "" : name) + "%");
+            pstmt.setString(3, "%" + (address == null ? "" : address) + "%");
+            pstmt.setString(4, "%" + (postal_code == null ? "" : postal_code) + "%");
+            pstmt.setString(5, "%" + (city == null ? "" : city) + "%");
+            pstmt.setString(6, "%" + (state == null ? "" : state) + "%");
 
-            PreparedStatement pstmt = connection.prepareStatement( "SELECT * FROM addresses WHERE CONCAT(country, state_province,recipient, street_number,street_address,postal_code, city_town_locality,full_address) LIKE ?");
-            pstmt.setString(1, "%" + (queryString == null ? "" : queryString) + "%");
+
+//            PreparedStatement pstmt = connection.prepareStatement( "SELECT * FROM addresses WHERE CONCAT(country, state_province,recipient, street_number,street_address,postal_code, city_town_locality,full_address) LIKE ?");
+//            pstmt.setString(1, "%" + (queryString == null ? "" : queryString) + "%");
             ResultSet rs = pstmt.executeQuery();
             while (rs.next()) {
                 int id = rs.getInt("ID");
@@ -280,44 +289,58 @@ public class AddressResource {
                 String retrievedFullAddress = rs.getString("full_address");
                 result.add(new Address(id, retrievedCountry,retrievedRecipient,retrievedStreetAddress, retrievedPostalCode,retrievedCityTownLocality,retrievedStateProvince, retrievedStreetNumber));
             }
-            String ans = "<table>\n" +
-                    "  <tr>\n" +
-                    "    <th>Company</th>\n" +
-                    "    <th>Contact</th>\n" +
-                    "    <th>Country</th>\n" +
-                    "  </tr>\n" +
-                    "  <tr>\n" +
-                    "    <td>Alfreds Futterkiste</td>\n" +
-                    "    <td>Maria Anders</td>\n" +
-                    "    <td>Germany</td>\n" +
-                    "  </tr>\n" +
-                    "  <tr>\n" +
-                    "    <td>Centro comercial Moctezuma</td>\n" +
-                    "    <td>Francisco Chang</td>\n" +
-                    "    <td>Mexico</td>\n" +
-                    "  </tr>\n" +
-                    "  <tr>\n" +
-                    "    <td>Ernst Handel</td>\n" +
-                    "    <td>Roland Mendel</td>\n" +
-                    "    <td>Austria</td>\n" +
-                    "  </tr>\n" +
-                    "  <tr>\n" +
-                    "    <td>Island Trading</td>\n" +
-                    "    <td>Helen Bennett</td>\n" +
-                    "    <td>UK</td>\n" +
-                    "  </tr>\n" +
-                    "  <tr>\n" +
-                    "    <td>Laughing Bacchus Winecellars</td>\n" +
-                    "    <td>Yoshi Tannamuri</td>\n" +
-                    "    <td>Canada</td>\n" +
-                    "  </tr>\n" +
-                    "  <tr>\n" +
-                    "    <td>Magazzini Alimentari Riuniti</td>\n" +
-                    "    <td>Giovanni Rovelli</td>\n" +
-                    "    <td>Italy"+queryString+"</td>\n" +
-                    "  </tr>\n" +
-                    "</table>";
-            return Response.ok(result)
+            String ans="";
+            List<String> countries = result.stream().map(m -> m.getCountry()).distinct().collect(Collectors.toList());
+            for(String countryVal : countries) {
+                String ans1="";
+                switch (countryVal) {
+                    case "Australia":
+                        ans1="<table border=1 >\n" +
+                                "  <tr>\n" +
+                                "    <th>ID</th>\n" +
+                                "    <th>country</th>\n" +
+                                "    <th>recipient</th>\n" +
+                                "    <th>street_address</th>\n" +
+                                "    <th>zipcode</th>\n" +
+                                "    <th>city_town_locality</th>\n" +
+                                "    <th>province</th>\n" +
+                                "    <th>street_number</th>\n" +
+                                "  </tr>\n";
+                        break;
+                    default:
+                        ans1="<table border=1 >\n" +
+                                "  <tr>\n" +
+                                "    <th>ID</th>\n" +
+                                "    <th>country</th>\n" +
+                                "    <th>recipient</th>\n" +
+                                "    <th>street_address</th>\n" +
+                                "    <th>postal_code</th>\n" +
+                                "    <th>city_town_locality</th>\n" +
+                                "    <th>state_province</th>\n" +
+                                "    <th>street_number</th>\n" +
+                                "  </tr>\n";
+                        break;
+                }
+                for(Address addressVal : result) {
+                    if(addressVal.getCountry() == countryVal) {
+                        ans1 = ans1 +
+                                String.format("  <tr>\n" +
+                                                "    <td>%s</td>\n" +
+                                                "    <td>%s</td>\n" +
+                                                "    <td>%s</td>\n" +
+                                                "    <td>%s</td>\n" +
+                                                "    <td>%s</td>\n" +
+                                                "    <td>%s</td>\n" +
+                                                "    <td>%s</td>\n" +
+                                                "    <td>%s</td>\n" +
+                                                "  </tr>\n",
+                                        addressVal.getID(), addressVal.getCountry(), addressVal.getRecipient(), addressVal.getStreetAddress(), addressVal.getPostalCode(), addressVal.getCity_town_locality(), addressVal.getState(), addressVal.getStreet_number());
+                    }
+                }
+                ans1=ans1+"</table><br><br>";
+                ans=ans+ans1;
+            }
+            return Response.ok(ans)
 //                    .header("Access-Control-Allow-Origin", "*")
 //                    .header("Access-Control-Allow-Headers", "origin, content-type, accept, authorization")
 //                    .header("Access-Control-Allow-Credentials", "true")

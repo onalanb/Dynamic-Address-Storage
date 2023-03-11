@@ -10,21 +10,46 @@
 <h2>Address Search</h2>
 
 <form action="">
-    <input type="text" id="site-search" name="queryString" value="" onKeyPress="showCustomer(this.value)">
+
     <!--
-    <select name="customers" onchange="showCustomer(this.value)">
-        <option value="">Select a customer:</option>
-        <option value="USA">Alfreds Futterkiste</option>
-        <option value="Australia">North/South</option>
-        <option value="Germany">Wolski Zajazd</option>
+    <select name="country" id="country" onchange="showCustomer(this.value)">
+        <option value="United States">United States</option>
+        <option value="Australia">Australia</option>
+        <option value="Germany">Germany</option>
+        <option value="Mexico">Mexico</option>
+        <option value="China">China</option>
+        <option value="Spain">Spain</option>
+        <option value="France">France</option>
+        <option value="Canada">Canada</option>
+        <option value="United Kingdom">United Kingdom</option>
+        <option value="New Zealand">New Zealand</option>
+
     </select>
     -->
+    <input type="text" id="country" name="country" value="" placeholder="country" onKeyPress="showCustomer(this.value)">
+    </br></br>
+    <input type="text" id="name" name="name" value="" placeholder="Full Name" onKeyPress="showCustomer(this.value)">
+    </br></br>
+    <input type="text" id="address" name="address" value="" placeholder="Address" onKeyPress="showCustomer(this.value)">
+    </br></br>
+    <input type="text" id="code" name="code" value="" placeholder="Postal Code/Zip code" onKeyPress="showCustomer(this.value)">
+    </br></br>
+    <input type="text" id="city" name="city" value="" placeholder="City /Town/Locality" onKeyPress="showCustomer(this.value)">
+    </br></br>
+    <input type="text" id="state" name="state" value="" placeholder="State/Province" onKeyPress="showCustomer(this.value)">
+
 </form>
 <br>
 <div id="txtHint">Customer info will be listed here...</div>
 
 <script>
     function showCustomer(str) {
+        const country = document.getElementById("country").value;
+        const name = document.getElementById("name").value;
+        const address = document.getElementById("address").value;
+        const code = document.getElementById("code").value;
+        const city = document.getElementById("city").value;
+        const state = document.getElementById("state").value;
         if (str == "") {
             document.getElementById("txtHint").innerHTML = "";
             return;
@@ -33,7 +58,7 @@
         xhttp.onload = function() {
             document.getElementById("txtHint").innerHTML = this.responseText;
         }
-        xhttp.open("GET", "http://127.0.0.1:8080/TP-1.0-SNAPSHOT/api/addresses?queryString="+str);
+        xhttp.open("GET", "http://127.0.0.1:8080/TP-1.0-SNAPSHOT/api/addresses?&country="+country+"&name="+name+"&address="+address+"&zipcode="+code+"&city="+city+"&state="+state);
         xhttp.send();
     }
 
