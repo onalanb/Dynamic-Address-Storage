@@ -39,3 +39,14 @@ Link : https://projects.eclipse.org/projects/ee4j.glassfish
 
 # How to run the code ?
 After installation, run the address.sql query to populate the database. Then use the intellij Run button to run the glassFish server. Change the root and password in sql connection. Then server should be running. For any errors, check the server log to debug.
+
+# Instructions to supporting multi country search.
+
+Approach:
+* To support multi country search, we will provide command separated list of countries.
+* We will split the country value at https://github.com/onalanb/Dynamic-Address-Storage/blob/main/TP/src/main/java/edu/SeattleU/team2/AddressResource.java#L258 , based on each value in the split request, we will pass it into the sql query.
+* Based on the countries we got, we update the PreparedStatement mysql connection with the list of countries we got with "Or" condition.
+
+With this approach, when user enters, "United States, Europe". Sql query will look for country matching with United States or with Europe and rest of the results will be filtered based on the user inputs.
+
+
